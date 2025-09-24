@@ -1,0 +1,7 @@
+apiVersion: v2
+name: nexus
+description: A Helm chart for Sonatype Nexus Repository Manager
+# Chart version
+version: 0.1.1
+# Nexus version from official image, used in templates/deployment.yaml
+appVersion: 3.84.1

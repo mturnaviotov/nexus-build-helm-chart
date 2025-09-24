@@ -1,0 +1,28 @@
+image:
+  repository: sonatype/nexus3
+  # tag is taken from Chart.appVersion if not specified
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 8081
+
+persistence:
+  enabled: true
+  # Use default storageClass or specify custom one
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 8Gi # update for your needs
+  # Specify mount paths for Nexus data
+  mountPath: /nexus-data
+
+nexus:
+  securityInitialPassword: "123123" # Replace with your admin password from env vars or secret manager
+  master: "https://remote.repository.com" # Replace with your remote repository URL
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "2Gi"
+    limits:
+      cpu: "2000m"
+      memory: "4Gi"
