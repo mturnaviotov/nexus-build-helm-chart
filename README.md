@@ -14,6 +14,13 @@ CMD [ "sh" ]
 ```
 # manual chart install
 helm install nexus3 ./charts/nexus
+
+# lint/tests
+help lint --strict charts/nexus
+helm lint charts/nexus
+helm template test charts/nexus
+helm template test charts/nexus #--debug
+
 # get all logs
 kubectl logs $(kubectl get pod | grep nexus | tail -n1 | awk '{print $1}') --all-containers
 # get init container logs

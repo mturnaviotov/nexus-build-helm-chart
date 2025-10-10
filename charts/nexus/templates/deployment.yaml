@@ -66,16 +66,3 @@ spec:
               port: 8081
             initialDelaySeconds: 60
             periodSeconds: 30
-        - name: init
-          image: curlimages/curl:8.1.2
-          command: ["/scripts/init.sh"]
-          volumeMounts:
-            - name: init-script
-              mountPath: /scripts
-          resources:
-            requests:
-              memory: "64Mi"
-              cpu: "50m"
-            limits:
-              memory: "128Mi"
-              cpu: "100m"
