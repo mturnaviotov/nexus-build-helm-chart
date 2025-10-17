@@ -4,10 +4,35 @@ image:
   pullPolicy: IfNotPresent
 
 service:
-  type: LoadBalancer
+  type: "ClusterIP"
+  port: 80
+  annotations:
+    #service.beta.kubernetes.io/aws-load-balancer-scheme: "internal"
+
+ingress:
+  enabled: true
+  host: nexus.local
   port: 8081
   annotations:
-    service.beta.kubernetes.io/aws-load-balancer-scheme: "internal"
+    className: ""
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: nginx #alb
+    #alb.ingress.kubernetes.io/scheme: internet-facing
+
+spec:
+  ingressClassName: nginx #alb
+  rules:
+    - host: "devnexus.local"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: "devnexus.local"
+                port:
+                  number: 8081
 
 persistence:
   enabled: true
@@ -19,8 +44,8 @@ persistence:
   mountPath: /nexus-data
 
 nexus:
-  securityInitialPassword: "123123" # Replace with your admin password from env vars or secret manager
-  master: "https://remote.repository.com" # Replace with your remote repository URL
+  securityInitialPassword: "admin_pass" # Replace with your admin password from env vars or secret manager
+  master: "https://master" # Replace with your remote repository URL
   resources:
     requests:
       cpu: "500m"
@@ -28,13 +53,3 @@ nexus:
     limits:
       cpu: "2000m"
       memory: "4Gi"
-
-ingress:
-  enabled: true
-  host: nexus.local
-  annotations:
-    className: ""
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-    kubernetes.io/ingress.class: alb
-    alb.ingress.kubernetes.io/scheme: internet-facing

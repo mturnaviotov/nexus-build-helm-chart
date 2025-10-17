@@ -22,11 +22,28 @@ provider "helm" {
   }
 }
 
-resource "helm_release" "nexus3" {
-  name            = "nexus3"
-  chart           = "${path.module}/charts/nexus"
-#  force_update    = true
-  recreate_pods   = true
-  version         = "0.1.1"  # Вказуємо версію чарту
-  cleanup_on_fail = true     # Очищати ресурси при помилці
+resource "helm_release" "nexusproxy" {
+  repository = "charts.local/helm"
+  chart      = "nexus"
+  version    = "0.1.22"
+
+  name             = "nexus-proxy"
+  namespace        = "nexus-proxy"
+  create_namespace = "true"
+
+  ##### DENUG ####
+  cleanup_on_fail = true
+  replace = true
+
+  values = [templatefile("${path.module}/values.yaml",
+    {
+      master        = "nexusmaster.local",
+      admin_pass    = "superpassword",
+      port          = 8081,
+      #storage_class = kubernetes_storage_class.id
+    }
+    )
+  ]
+
+  #depends_on = [module.aws_lb_controller]
 }

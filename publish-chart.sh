@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuration
-NEXUS_URL="http://localhost:2000"  # Assuming port-forward to 2000
+NEXUS_URL="http://repos.local:2000"  # Assuming port-forward to 2000
 REPO_NAME="helm-releases"
 CHART_PATH="./charts/nexus"
 NEXUS_USER="admin". # replace username if different
