@@ -40,6 +40,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 8081
+            {{- if .Values.service.docker.enabled }}
+            - containerPort: {{ .Values.service.docker.port }}
+            {{- end }}
           env:
             - name: NEXUS_SECURITY_RANDOMPASSWORD
               value: "false"

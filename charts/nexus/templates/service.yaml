@@ -17,5 +17,11 @@ spec:
       targetPort: 8081
       protocol: TCP
       name: http
+    {{- if .Values.service.docker.enabled }}
+    - port: {{ .Values.service.docker.port }}
+      targetPort: {{ .Values.service.docker.port }}
+      protocol: TCP
+      name: docker
+    {{- end }}
   selector:
     app: {{ .Release.Name }}

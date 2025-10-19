@@ -6,8 +6,10 @@ image:
 service:
   type: "ClusterIP"
   port: 80
-  annotations:
-    #service.beta.kubernetes.io/aws-load-balancer-scheme: "internal"
+  annotations: #service.beta.kubernetes.io/aws-load-balancer-scheme: "internal"
+  docker:
+    enabled: true
+    port: 8100
 
 ingress:
   enabled: true
@@ -23,16 +25,16 @@ ingress:
 spec:
   ingressClassName: nginx #alb
   rules:
-    - host: "devnexus.local"
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: "devnexus.local"
-                port:
-                  number: 8081
+  - host: "devnexus.local"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: "devnexus.local"
+            port:
+              number: 8081
 
 persistence:
   enabled: true
