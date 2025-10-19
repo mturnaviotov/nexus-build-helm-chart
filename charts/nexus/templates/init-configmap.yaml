@@ -84,4 +84,35 @@ data:
         "contentDisposition": "ATTACHMENT"
       }
     }'
+    echo Raw proxy repository created
+    echo Create docker proxy repository
+    curl -v -s -X POST 'http://{{ include "app.FQDN" . }}/service/rest/v1/repositories/docker/hosted' \
+      -u "admin:{{ .Values.nexus.securityInitialPassword  }}" \
+      -H "accept: application/json" \
+      -H "Content-Type: application/json" \
+    -d '{
+      "name": "internal",
+      "online": true,
+      "storage": {
+        "blobStoreName": "default",
+        "strictContentTypeValidation": true,
+        "writePolicy": "allow_once",
+        "latestPolicy": true
+      },
+      "cleanup": {
+        "policyNames": [
+          "string"
+        ]
+      },
+      "component": {
+        "proprietaryComponents": true
+      },
+      "docker": {
+        "v1Enabled": false,
+        "forceBasicAuth": true,
+        "httpPort": 8100,
+        "subdomain": "docker-a",
+        "pathEnabled": false
+      }
+    }'
     echo "Initialization script completed."
