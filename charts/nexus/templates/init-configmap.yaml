@@ -15,23 +15,22 @@ data:
   init.sh: |
     #!/bin/sh
     # Wait for Nexus to be ready
-    until curl -sf http://{{ .Release.Name }}:8081/service/rest/v1/status; do
+    until curl -sf 'http://{{ include "app.FQDN" . }}/service/rest/v1/status'; do
       echo "Waiting for Nexus to be ready..."
       sleep 10
     done
-    echo Wait for a bit
-    sleep 10
     echo =-=-=-=-=-=-=-= Allow anonymous access for pulling =-=-=-=-=-=-=-=
-    curl -X 'PUT' -u admin:{{ .Values.nexus.securityInitialPassword }} 'http://{{ .Release.Name }}:8081/service/rest/v1/security/anonymous' \
+    curl -X 'PUT' -u 'admin:{{ .Values.nexus.securityInitialPassword }}' 'http://{{ include "app.FQDN" . }}/service/rest/v1/security/anonymous' \
       -H 'accept: application/json' -H 'Content-Type: application/json' \
       -d '{ "enabled": true, "userId": "anonymous", "realmName": "NexusAuthenticatingRealm"}'
+
     echo =-=-=-=-=-=-=-= Anonymous access for pulling allowed, now try to 'EULA' accept =-=-=-=-=-=-=-= 
-    curl -X 'POST' -v -s -u admin:{{ .Values.nexus.securityInitialPassword}} 'http://{{ .Release.Name }}:8081/service/rest/v1/system/eula' \
+    curl -X 'POST' -v -s -u 'admin:{{ .Values.nexus.securityInitialPassword}}' 'http://{{ include "app.FQDN" . }}/service/rest/v1/system/eula' \
       -H 'accept: application/json' -H 'Content-Type: application/json' \
       -d '{"accepted": true, "disclaimer": "Use of Sonatype Nexus Repository - Community Edition is governed by the End User License Agreement at https://links.sonatype.com/products/nxrm/ce-eula. By returning the value from ‘accepted:false’ to ‘accepted:true’, you acknowledge that you have read and agree to the End User License Agreement at https://links.sonatype.com/products/nxrm/ce-eula."}'
     echo EULA accepted
     echo Create raw proxy repository
-    curl -v -s -X POST "http://{{ .Release.Name }}:8081/service/rest/v1/repositories/raw/proxy" \
+    curl -v -s -X POST 'http://{{ include "app.FQDN" . }}/service/rest/v1/repositories/raw/proxy' \
       -u "admin:{{ .Values.nexus.securityInitialPassword  }}" \
       -H "accept: application/json" \
       -H "Content-Type: application/json" \
