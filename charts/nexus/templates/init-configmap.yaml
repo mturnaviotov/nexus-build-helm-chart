@@ -85,13 +85,13 @@ data:
       }
     }'
     echo Raw proxy repository created
-    echo Create docker proxy repository
+    echo Create docker repository
     curl -v -s -X POST 'http://{{ include "app.FQDN" . }}/service/rest/v1/repositories/docker/hosted' \
       -u "admin:{{ .Values.nexus.securityInitialPassword  }}" \
       -H "accept: application/json" \
       -H "Content-Type: application/json" \
     -d '{
-      "name": "internal",
+      "name": "hosted-docker",
       "online": true,
       "storage": {
         "blobStoreName": "default",
@@ -113,6 +113,28 @@ data:
         "httpPort": 8100,
         "subdomain": "docker-a",
         "pathEnabled": false
+      }
+    }'
+    echo Create Helm repository
+    curl -v -s -X POST 'http://{{ include "app.FQDN" . }}/service/rest/v1/repositories/helm/hosted' \
+      -u "admin:{{ .Values.nexus.securityInitialPassword  }}" \
+      -H "accept: application/json" \
+      -H "Content-Type: application/json" \
+    -d '{
+      "name": "hosted-helm",
+      "online": true,
+      "storage": {
+        "blobStoreName": "default",
+        "strictContentTypeValidation": true,
+        "writePolicy": "allow_once"
+      },
+      "cleanup": {
+        "policyNames": [
+          "string"
+        ]
+      },
+      "component": {
+        "proprietaryComponents": true
       }
     }'
     echo "Initialization script completed."
